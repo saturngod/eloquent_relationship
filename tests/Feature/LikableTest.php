@@ -35,6 +35,26 @@ class LikableTest extends TestCase
         $this->assertCount(1,$likeUser->likedPosts);
     }
 
+    public function test_like_post_user(): void
+    {
+        $user = User::factory()->create();
+
+        $text = TextPost::factory()->create();
+        $post = Post::factory([
+            "user_id" => $user->id,
+            'postable_id' => $text->id,
+            'postable_type' => TextPost::class
+        ])->create();
+
+        $likeUser = User::factory()->create();
+
+        $post->like($likeUser);
+
+        $likedNewUser = $post->likes->first();
+        
+        $this->assertEquals($likedNewUser->id,$likeUser->id);
+    }
+
     public function test_like_comment(): void
     {
         $comment_user = User::factory()->create();
